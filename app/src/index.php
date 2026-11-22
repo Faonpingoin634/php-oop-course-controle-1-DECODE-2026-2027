@@ -8,7 +8,6 @@ use App\Lib\Http\Request;
 $request = new Request();
 
 $router = new Router();
-$router->main($request);
 
 $response = $router->main($request);
 
