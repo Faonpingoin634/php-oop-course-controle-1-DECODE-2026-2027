@@ -12,7 +12,6 @@ $router->main($request);
 
 $response = $router->main($request);
 
-http_response_code($response->statusCode);
-echo $response->content;
+$response->send();
 
 
