@@ -20,6 +20,28 @@ class ContactRepository {
         );
     }
 
+    public function find(string $filename): ?array
+    {
+        $path = $this->getPath($filename);
+
+        if ($path === null || file_exists($path) === false) {
+            return null;
+        }
+
+        $contact = json_decode(file_get_contents($path), true);
+
+        return is_array($contact) ? $contact : null;
+    }
+
+    private function getPath(string $filename): ?string
+    {
+        if ($filename !== basename($filename) || str_ends_with($filename, '.json') === false) {
+            return null;
+        }
+
+        return self::CONTACTS_DIR . '/' . $filename;
+    }
+
     public function findAll(): array
     {
         $contacts = [];
