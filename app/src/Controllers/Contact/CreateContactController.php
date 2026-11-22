@@ -5,9 +5,9 @@ namespace App\Controllers\Contact;
 use App\Lib\Controllers\AbstractController;
 use App\Lib\Http\Request;
 use App\Lib\Http\Response;
+use App\Repository\ContactRepository;
 
 class CreateContactController extends AbstractController {
-    private const string CONTACTS_DIR = __DIR__ . '/../../../var/contacts';
     private const array ALLOWED_FIELDS = ['email', 'subject', 'message'];
 
     public function process(Request $request): Response
@@ -35,12 +35,9 @@ class CreateContactController extends AbstractController {
             'dateOfLastUpdate' => $now,
         ];
 
-        if (is_dir(self::CONTACTS_DIR) === false) {
-            mkdir(self::CONTACTS_DIR, 0777, true);
-        }
-
         $filename = $now . '_' . $data['email'] . '.json';
-        file_put_contents(self::CONTACTS_DIR . '/' . $filename, json_encode($contact, JSON_PRETTY_PRINT));
+        $repository = new ContactRepository();
+        $repository->save($filename, $contact);
 
         return $this->jsonResponse(201, ['file' => $filename]);
     }
