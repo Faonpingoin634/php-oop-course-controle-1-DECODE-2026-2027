@@ -8,6 +8,8 @@ class Request {
     private readonly array $headers;
     private readonly string $body;
 
+    private array $params = [];
+
     public function __construct()
     {
         $this->uri = $_SERVER['REQUEST_URI'];
@@ -41,5 +43,15 @@ class Request {
     public function getBody(): string
     {
         return $this->body;
+    }
+
+        public function setParams(array $params): void
+    {
+        $this->params = $params;
+    }
+
+    public function getParam(string $name): ?string
+    {
+        return $this->params[$name] ?? null;
     }
 }

@@ -20,7 +20,8 @@ class Router {
         foreach($routes as $route) {
             $this->validateConfig($route);
             
-            if($this->checkUri($request, $route['uri']) === false) {
+            $params = $this->matchUri($request, $route['uri']);
+            if($params === null) {
                 continue;
             }
             $uriFoundFlag = true;
@@ -29,6 +30,8 @@ class Router {
                 continue;
             }
             $methodFoundFlag = true;
+
+            $request->setParams($params);
 
             try {
                 $controllerInstance = $this->getValidControllerInstance($route['controller']);
@@ -69,8 +72,33 @@ class Router {
         }
     }
 
-    private function checkUri(Request $request, string $uri): bool {
-        return $request->getUri() === $uri;
+    private function matchUri(Request $request, string $routeUri): ?array {
+        $requestPath = parse_url($request->getUri(), PHP_URL_PATH);
+
+        $requestSegments = explode('/', trim($requestPath, '/'));
+        $routeSegments = explode('/', trim($routeUri, '/'));
+
+        if(count($requestSegments) !== count($routeSegments)) {
+            return null;
+        }
+
+        $params = [];
+
+        foreach($routeSegments as $index => $routeSegment) {
+            $requestSegment = $requestSegments[$index];
+
+            if(str_starts_with($routeSegment, '{') && str_ends_with($routeSegment, '}')) {
+                $paramName = substr($routeSegment, 1, -1);
+                $params[$paramName] = urldecode($requestSegment);
+                continue;
+            }
+
+            if($routeSegment !== $requestSegment) {
+                return null;
+            }
+        }
+
+        return $params;
     }
     
     private function checkMethod(Request $request, string $method): bool {
