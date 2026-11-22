@@ -4,14 +4,19 @@
     "method": "GET",
     "controller": "HomeController"
   },
-  { 
+  {
     "uri": "/contact",
-    "method": "POST", 
-    "controller": "Contact\\CreateContactController" 
+    "method": "POST",
+    "controller": "Contact\\CreateContactController"
   },
-  { 
-    "uri": "/contact", 
-    "method": "GET", 
-    "controller": "Contact\\ListContactController" 
+  {
+    "uri": "/contact",
+    "method": "GET",
+    "controller": "Contact\\ListContactController"
+  },
+  {
+    "uri": "/contact/{filename}",
+    "method": "GET",
+    "controller": "Contact\\GetContactController"
   }
 ]
