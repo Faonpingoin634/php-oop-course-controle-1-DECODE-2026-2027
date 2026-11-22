@@ -33,6 +33,18 @@ class ContactRepository {
         return is_array($contact) ? $contact : null;
     }
 
+    public function delete(string $filename): bool
+    {
+        $path = $this->getPath($filename);
+
+        if ($path === null || file_exists($path) === false) {
+            return false;
+        }
+
+
+        return unlink($path);
+    }
+
     private function getPath(string $filename): ?string
     {
         if ($filename !== basename($filename) || str_ends_with($filename, '.json') === false) {
